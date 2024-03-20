@@ -65,7 +65,7 @@ public class AuthenticationController {
         return "Public Content. - teste " + token + "       foi validado ou nao: " + toke1n;
 
     }
-
+    //teste
     @GetMapping("/alll")
     public ResponseEntity<String> allAccessToken(@Valid @RequestHeader("Authorization") String token) {
         if (tokenService.validarToken(token)) {
