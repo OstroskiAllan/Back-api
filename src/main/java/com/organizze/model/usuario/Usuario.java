@@ -23,7 +23,7 @@ public class Usuario implements UserDetails{
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer id; //se caso der problema ja sabe que é aqui
+    private Long id; //se caso der problema ja sabe que é aqui
     private String nome;
     private String email;
     private String password;
