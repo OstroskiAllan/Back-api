@@ -29,7 +29,6 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/projetos/projeto").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
