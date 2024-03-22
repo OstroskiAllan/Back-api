@@ -59,12 +59,12 @@ public class AuthenticationController {
     // P/ registrar deixei este endpoint onde ele esta liberado sem autorizacao mas
     // ele esta validando token
     @GetMapping("/all")
-    public String allAccess(@RequestHeader("Authorization") String token) {
-        String authToken = token.substring(7);
+    public String allAccess(@RequestHeader("Authorization") @Valid String token) {
+        String authToken = token.replace("Bearer ", "");
         String toke1n = tokenService.validateToken(authToken);
         return "Public Content. - teste " + token + "       foi validado ou nao: " + toke1n;
-
     }
+
     //teste
     @GetMapping("/alll")
     public ResponseEntity<String> allAccessToken(@Valid @RequestHeader("Authorization") String token) {
