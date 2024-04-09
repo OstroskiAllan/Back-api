@@ -50,9 +50,14 @@ public class Projeto {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    public Long setUsuarioId(Long userId) {
-        return this.usuario.getId();
+    public Projeto(String nome, String descricao, Date data_inicio, Date data_fim, Long usuarioId){
+        this.nome = nome;
+        this.descricao = descricao;
+        this.data_inicio = data_inicio;
+        this.data_fim = data_fim;
+        this.usuario = new Usuario(usuarioId);
     }
+    
 }
 
 

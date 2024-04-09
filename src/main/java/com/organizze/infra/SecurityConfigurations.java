@@ -1,5 +1,7 @@
 package com.organizze.infra;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,27 +26,33 @@ public class SecurityConfigurations {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return  httpSecurity
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(request -> new 
-            CorsConfiguration().applyPermitDefaultValues())) // Adicione esta linha
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration corsConfiguration = new CorsConfiguration();
+            corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // especificar o origin
+            corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE"));
+            corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+            corsConfiguration.setAllowCredentials(true);
+            return corsConfiguration;
+        }))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/alla").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        // .requestMatchers(HttpMethod.POST, "/projetos").permitAll()
+                        .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

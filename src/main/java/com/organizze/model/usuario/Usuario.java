@@ -33,6 +33,11 @@ public class Usuario implements UserDetails{
         this.email = email;
         this.password = password;
     }
+    
+    public Usuario(Long id) {
+        this.id = id;
+        // inicialize outros campos, se necessário
+    }
 
     @Override
     public String getUsername() {
