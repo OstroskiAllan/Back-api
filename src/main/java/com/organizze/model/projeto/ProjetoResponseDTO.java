@@ -18,6 +18,7 @@ public record ProjetoResponseDTO (
         projeto.getData_criacao(),
         projeto.getData_inicio(),
         projeto.getData_fim(),
-        projeto.getUsuario().getId());
+        projeto.getUsuario().getId()
+        );
     }
 }
