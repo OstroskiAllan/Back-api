@@ -1,4 +1,4 @@
-package com.organizze.model.projeto;
+package com.organizze.model.tarefa;
 
 import java.sql.Date;
 
@@ -16,38 +16,38 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "projeto")
+@Table(name = "Tarefa")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Projeto {
+public class Tarefa {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
 
-    private String descricao;
+    private String observacoes;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "data_criacao")
-    private Date data_criacao;
+    private Date dataCriacao;
 
     @Temporal(TemporalType.DATE)
-    @Column(nullable = true, name = "data_inicio")
-    private Date data_inicio;
+    @Column(nullable = true, name = "data_entrega")
+    private Date dataEntrega;
 
-    @Temporal(TemporalType.DATE)
-    @Column(nullable = true, name = "data_fim")
-    private Date data_fim;
+    private Long projetoId;
+    private Long statusId;
+    private Long usuarioId;
 
-    public Projeto(String nome, String descricao, Date data_inicio, Date data_fim){
+    public Tarefa(String nome, String observacoes, Date dataCriacao, Date dataEntrega){
         this.nome = nome;
-        this.descricao = descricao;
-        this.data_inicio = data_inicio;
-        this.data_fim = data_fim;
+        this.observacoes = observacoes;
+        this.dataCriacao = dataCriacao;
+        this.dataEntrega = dataEntrega;
+        
     }
 }
-
-

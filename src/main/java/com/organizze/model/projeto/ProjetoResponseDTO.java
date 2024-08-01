@@ -3,13 +3,12 @@ package com.organizze.model.projeto;
 import java.util.Date;
 
 public record ProjetoResponseDTO (
-        int id,
+        Long id,
         String nome,
         String descricao,
         Date dataCriacao,
         Date dataInicio,
-        Date dataFim,
-        Long usuarioId
+        Date dataFim
 ){
     public ProjetoResponseDTO(Projeto projeto){
         this(projeto.getId(),
@@ -17,8 +16,7 @@ public record ProjetoResponseDTO (
         projeto.getDescricao(),
         projeto.getData_criacao(),
         projeto.getData_inicio(),
-        projeto.getData_fim(),
-        projeto.getUsuario().getId()
+        projeto.getData_fim()
         );
     }
 }

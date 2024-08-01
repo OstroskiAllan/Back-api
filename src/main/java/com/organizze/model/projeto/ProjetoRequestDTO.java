@@ -7,8 +7,7 @@ public record ProjetoRequestDTO(
     String descricao,
     Date dataCriacao,
     Date dataInicio,
-    Date dataFim,
-    Integer usuarioId
+    Date dataFim
 ){
     
 }

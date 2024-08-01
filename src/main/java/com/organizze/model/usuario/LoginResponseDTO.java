@@ -1,4 +1,4 @@
 package com.organizze.model.usuario;
 
-public record LoginResponseDTO(String token) {
+public record LoginResponseDTO(String token, Usuario user) {
 }
