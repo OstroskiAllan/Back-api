@@ -46,10 +46,10 @@ public class ProjetoController {
             @RequestBody @Valid ProjetoRegisterDTO data) {
         Long userId = ((Usuario) userDetails).getId();
 
-        Projeto novoProjeto = new Projeto(data.nome(), data.descricao(), data.data_inicio(), data.data_fim());
+        Projeto novoProjeto = new Projeto(data.nome(), data.descricao(), data.dataInicio(), data.dataFim());
         this.projetoRepository.save(novoProjeto);
 
-        UsuarioProjeto novoUsuarioProjeto = new UsuarioProjeto(userId, novoProjeto.getId(), "Cargo do usuário");
+        UsuarioProjeto novoUsuarioProjeto = new UsuarioProjeto(userId, novoProjeto.getId(), "Gerente");
         this.usuarioProjetoRepository.save(novoUsuarioProjeto);
 
         return ResponseEntity.ok().build();
@@ -83,6 +83,17 @@ public class ProjetoController {
         Optional<Projeto> projetos = projetoRepository.findById(id);
         return projetos.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+   
+    @GetMapping("/part/{id}")
+    public ResponseEntity<List<UsuarioProjeto>> getProjetoPartById(@AuthenticationPrincipal @PathVariable Long id) {
+        List<UsuarioProjeto> usuarioProjetos = usuarioProjetoRepository.findByUsuarioIdAndNotGerente(id);
+
+        if (usuarioProjetos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(usuarioProjetos, HttpStatus.OK);
     }
 
     @GetMapping

@@ -36,17 +36,17 @@ public class Projeto {
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = true, name = "data_inicio")
-    private Date data_inicio;
+    private Date dataInicio;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = true, name = "data_fim")
-    private Date data_fim;
+    private Date dataFim;
 
-    public Projeto(String nome, String descricao, Date data_inicio, Date data_fim){
+    public Projeto(String nome, String descricao, Date dataInicio, Date dataFim){
         this.nome = nome;
         this.descricao = descricao;
-        this.data_inicio = data_inicio;
-        this.data_fim = data_fim;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
     }
 }
 
