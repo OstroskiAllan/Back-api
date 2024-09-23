@@ -1,6 +1,6 @@
 package com.organizze.model.tarefa;
 
-import java.sql.Date;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,11 +43,14 @@ public class Tarefa {
     private Long statusId;
     private Long usuarioId;
 
-    public Tarefa(String nome, String observacoes, Date dataCriacao, Date dataEntrega){
+    // Novo construtor que recebe os parâmetros necessários
+    public Tarefa(String nome, String observacoes, Date dataCriacao, Date dataEntrega, Long projetoId, Long statusId, Long usuarioId) {
         this.nome = nome;
         this.observacoes = observacoes;
         this.dataCriacao = dataCriacao;
         this.dataEntrega = dataEntrega;
-        
+        this.projetoId = projetoId;
+        this.statusId = statusId;
+        this.usuarioId = usuarioId;
     }
 }

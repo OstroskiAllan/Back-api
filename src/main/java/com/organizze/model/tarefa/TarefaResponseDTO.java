@@ -19,6 +19,6 @@ public record TarefaResponseDTO(
             tarefa.getProjetoId(),
             tarefa.getStatusId(),
             tarefa.getUsuarioId()
-            );
+        );
     }
 }

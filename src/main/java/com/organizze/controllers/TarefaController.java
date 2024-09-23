@@ -3,10 +3,12 @@ package com.organizze.controllers;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.organizze.model.usuario_projeto.*;
 import com.organizze.model.tarefa.Tarefa;
 import com.organizze.model.tarefa.TarefaRequestDTO;
 import com.organizze.model.tarefa.TarefaResponseDTO;
@@ -26,6 +28,7 @@ import com.organizze.repositories.TarefaRepository;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/task")
 @CrossOrigin(origins = "http://localhost:4200")
 public class TarefaController {
     @Autowired
@@ -33,58 +36,46 @@ public class TarefaController {
     @Autowired
     private ProjetoRepository projetoRepository;
 
-    // @PostMapping("/{projetoId}/tarefa")
-    // public ResponseEntity createTarefa(@PathVariable Long projetoId, @RequestBody @Valid TarefaRequestDTO data) {
-        
-    //     Tarefa novaTarefa = new Tarefa(data.nome(), data.observacoes(), data.dataEntrega(), data.statusId());
-    //     this.tarefaRepository.save(novaTarefa);
-
-    //     return ResponseEntity.ok().build();
-    // }
-
-    @GetMapping("/tarefa/{tarefaId}")
-    public ResponseEntity<TarefaResponseDTO> getTarefaById(@PathVariable Long tarefaId) {
-        Optional<Tarefa> tarefa = tarefaRepository.findById(tarefaId);
-        return tarefa.map(value -> new ResponseEntity<>(new TarefaResponseDTO(value), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @GetMapping("/{projetoId}/tarefa")
+    @GetMapping("/{projetoId}")
     public ResponseEntity<List<TarefaResponseDTO>> getTarefasFromProjeto(@PathVariable Long projetoId) {
         List<Tarefa> tarefas = tarefaRepository.findByProjetoId(projetoId);
 
-        List<TarefaResponseDTO> tarefaList = tarefas.stream().map(TarefaResponseDTO::new)
+        List<TarefaResponseDTO> tarefaList = tarefas.stream()
+                .map(TarefaResponseDTO::new)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(tarefaList);
     }
 
-    // @PutMapping("/tarefa/{tarefaId}")
-    // public ResponseEntity updateTarefa(@PathVariable Long tarefaId, @RequestBody @Valid TarefaRequestDTO data) {
-    //     Optional<Tarefa> tarefaOptional = tarefaRepository.findById(tarefaId);
-    //     if (!tarefaOptional.isPresent()) {
-    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    //     }
+    // @PostMapping("/")
+    // public ResponseEntity<TarefaResponseDTO> criarTarefa(@RequestBody TarefaRequestDTO tarefaRequestDTO) {
+    //     // Usando java.util.Date para a data atual
+    //     Date dataAtual = new Date();
 
-    //     Tarefa tarefa = tarefaOptional.get();
-    //     tarefa.setNome(data.getNome());
-    //     tarefa.setObservacoes(data.getObservacoes());
-    //     tarefa.setDataEntrega(data.getDataEntrega());
-    //     tarefa.setStatusId(data.getStatusId());
-    //     tarefa.setUsuarioId(data.getUsuarioId());
-    //     tarefaRepository.save(tarefa);
+    //     // Criando uma nova tarefa com os dados recebidos
+    //     Tarefa novaTarefa = new Tarefa(
+    //             tarefaRequestDTO.nome(),
+    //             tarefaRequestDTO.observacoes(),
+    //             dataAtual, // Definindo a data de criação como o momento atual
+    //             tarefaRequestDTO.dataEntrega(),
+    //             tarefaRequestDTO.projetoId(),
+    //             tarefaRequestDTO.statusId(),
+    //             tarefaRequestDTO.usuarioId());
 
-    //     return ResponseEntity.ok().build();
+    //     // Definindo os valores para as colunas da tabela usuario_projeto
+    //     novaTarefa.setUsuarioProjetoProjetoId(tarefaRequestDTO.projetoId()); // Definir o ID do projeto
+    //     novaTarefa.setUsuarioProjetoUsuarioId(tarefaRequestDTO.usuarioId()); // Definir o ID do usuário
+    //     novaTarefa.setUsuarioProjetoDataInicioTrabalho(new Date(System.currentTimeMillis())); // Definir a data de
+    //                                                                                           // início de trabalho
+
+    //     // Salvando a nova tarefa no repositório
+    //     tarefaRepository.save(novaTarefa);
+
+    //     // Criando a resposta com os dados da tarefa criada
+    //     TarefaResponseDTO resposta = new TarefaResponseDTO(novaTarefa);
+
+    //     // Retornando a resposta com o status HTTP 201 Created
+    //     return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
     // }
-
-    @DeleteMapping("/tarefa/{tarefaId}")
-    public ResponseEntity deleteTarefa(@PathVariable Long tarefaId) {
-        if (!tarefaRepository.existsById(tarefaId)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        tarefaRepository.deleteById(tarefaId);
-
-        return ResponseEntity.ok().build();
-    }
 
 }

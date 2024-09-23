@@ -39,7 +39,6 @@ public class ProjetoController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private TokenService tokenService;
-   
 
     @PostMapping
     public ResponseEntity createProjeto(@AuthenticationPrincipal UserDetails userDetails,
@@ -54,18 +53,6 @@ public class ProjetoController {
 
         return ResponseEntity.ok().build();
     }
-
-    // @PostMapping("/{projetoId}/tarefa")
-    // public ResponseEntity createTarefa(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long projetoId,
-    //         @RequestBody @Valid TarefaRegisterDTO data) {
-    //     Long userId = ((Usuario) userDetails).getId();
-
-    //     Tarefa novaTarefa = new Tarefa(data.nome(), data.observacoes(), data.dataEntrega(), projetoId,
-    //             data.statusId(), userId);
-    //     this.tarefaRepository.save(novaTarefa);
-
-    //     return ResponseEntity.ok().build();
-    // }
 
     @PostMapping("/{projetoId}/usuario")
     public ResponseEntity addUsuarioAoProjeto(@AuthenticationPrincipal UserDetails userDetails,
@@ -84,7 +71,7 @@ public class ProjetoController {
         return projetos.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-   
+
     @GetMapping("/part/{id}")
     public ResponseEntity<List<UsuarioProjeto>> getProjetoPartById(@AuthenticationPrincipal @PathVariable Long id) {
         List<UsuarioProjeto> usuarioProjetos = usuarioProjetoRepository.findByUsuarioIdAndNotGerente(id);
@@ -94,6 +81,29 @@ public class ProjetoController {
         }
 
         return new ResponseEntity<>(usuarioProjetos, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/team")
+    public ResponseEntity<List<UsuarioProjeto>> getTeamByProjectId(@AuthenticationPrincipal @PathVariable Long id) {
+        List<UsuarioProjeto> usuarioProjetos = usuarioProjetoRepository.findTeamByProjetoId(id);
+
+        if (usuarioProjetos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(usuarioProjetos, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/nome")
+    public ResponseEntity<String> getUserName(@PathVariable Long id) {
+        // Supondo que o UsuarioRepository tenha um método para buscar o nome do usuário pelo ID
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        
+        if (usuario.isPresent()) {
+            String nomeUsuario = usuario.get().getNome(); // Acessa o nome do usuário
+            return ResponseEntity.ok(nomeUsuario);
+        } else {
+            return ResponseEntity.notFound().build(); // Retorna 404 se o usuário não for encontrado
+        }
     }
 
     @GetMapping
