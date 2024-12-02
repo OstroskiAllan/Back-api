@@ -1,7 +1,7 @@
 package com.organizze.model.tarefa;
 
-import java.util.Date;
 
+import java.util.Date;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,10 +14,12 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "Tarefa")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -39,9 +41,17 @@ public class Tarefa {
     @Column(nullable = true, name = "data_entrega")
     private Date dataEntrega;
 
+    @Column(name = "usuario_projeto_projeto_id")
     private Long projetoId;
+
+    @Column(name = "status_id")
     private Long statusId;
+
+    @Column(name = "usuario_projeto_usuario_id")
     private Long usuarioId;
+    
+    @Column(name = "usuario_projeto_data_inicio_trabalho")
+    private Date dataUsuarioInicioTrabalho;
 
     // Novo construtor que recebe os parâmetros necessários
     public Tarefa(String nome, String observacoes, Date dataCriacao, Date dataEntrega, Long projetoId, Long statusId, Long usuarioId) {

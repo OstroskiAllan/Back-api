@@ -1,11 +1,12 @@
 package com.organizze.model.tarefa;
 
-import java.sql.Date;
+import java.util.Date;
 
 public record TarefaResponseDTO(
         Long id,
         String nome,
         String observacoes,
+        Date dataCriacao,
         Date dataEntrega,
         Long projetoId,
         Long statusId,
@@ -15,6 +16,7 @@ public record TarefaResponseDTO(
             tarefa.getId(),
             tarefa.getNome(),
             tarefa.getObservacoes(),
+            tarefa.getDataCriacao(),
             tarefa.getDataEntrega(),
             tarefa.getProjetoId(),
             tarefa.getStatusId(),
