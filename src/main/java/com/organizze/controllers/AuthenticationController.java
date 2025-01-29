@@ -72,6 +72,7 @@ public class AuthenticationController {
 
     // P/ registrar deixei este endpoint onde ele esta liberado sem autorizacao mas
     // ele esta validando token
+    
     @GetMapping("/all")
     public String allAccess(@RequestHeader("Authorization") @Valid String token) {
         String authToken = token.replace("Bearer ", "");

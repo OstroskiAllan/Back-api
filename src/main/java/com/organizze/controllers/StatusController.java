@@ -21,7 +21,6 @@ import com.organizze.model.status.StatusResponseDTO;
 import com.organizze.repositories.StatusRepository;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -30,9 +29,6 @@ public class StatusController {
 
     @Autowired
     private StatusRepository statusRepository;
-
-    @Autowired
-    private TokenService tokenService;
 
     @GetMapping()
     public  ResponseEntity<List<Status>> getAllStatus() {

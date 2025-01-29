@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+
+
 @IdClass(UsuarioProjetoId.class)
 public class UsuarioProjeto {
     @Id
@@ -20,4 +21,36 @@ public class UsuarioProjeto {
     private Long projetoId;
 
     private String cargo;
+    
+    // Constructors
+    public UsuarioProjeto(Long usuarioId, Long projetoId, String cargo) {
+        this.usuarioId = usuarioId;
+        this.projetoId = projetoId;
+        this.cargo = cargo;
+    }
+
+     // Getters e setters
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public Long getProjetoId() {
+        return projetoId;
+    }
+
+    public void setProjetoId(Long projetoId) {
+        this.projetoId = projetoId;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
 }

@@ -32,10 +32,27 @@ public class Usuario implements UserDetails{
         this.email = email;
         this.password = password;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     
     public Usuario(Long id) {
         this.id = id;
         // inicialize outros campos, se necessário
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
