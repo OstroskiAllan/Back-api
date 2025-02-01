@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.organizze.infra.TokenService;
 import com.organizze.model.projeto.Projeto;
 import com.organizze.model.projeto.ProjetoRegisterDTO;
+import com.organizze.model.projeto.ProjetoRequestDTO;
 import com.organizze.model.projeto.ProjetoResponseDTO;
+import com.organizze.model.tarefa.Tarefa;
 import com.organizze.model.usuario.Usuario;
 import com.organizze.model.usuario_projeto.UsuarioProjeto;
 import com.organizze.model.usuario_projeto.UsuarioProjetoDTO;
@@ -37,6 +40,7 @@ import com.organizze.repositories.UsuarioRepository;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @RestController
 @RequestMapping("/projeto")
@@ -140,7 +144,7 @@ public class ProjetoController {
         return ResponseEntity.ok().build();
     }
 
-    //busca o time
+    // busca o time
     @GetMapping("/team/{id}")
     public ResponseEntity<List<UsuarioProjeto>> getTeamByProjectId(@AuthenticationPrincipal @PathVariable Long id) {
         List<UsuarioProjeto> usuarioProjetos = usuarioProjetoRepository.findTeamByProjetoId(id);
@@ -151,12 +155,14 @@ public class ProjetoController {
         return new ResponseEntity<>(usuarioProjetos, HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Void> updateUsuarioProjeto(@PathVariable UsuarioProjetoId id,
+    @PutMapping("/update/{projetoId}/{usuarioId}")
+    public ResponseEntity<Void> updateUsuarioProjeto(@PathVariable Long projetoId, @PathVariable Long usuarioId,
             @RequestBody @Valid UsuarioProjetoDTO data) {
+        UsuarioProjetoId id = new UsuarioProjetoId(projetoId, usuarioId);
         usuarioProjetoRepository.updateUsuarioProjeto(id, data.projetoId(), data.cargo());
         return ResponseEntity.ok().build();
     }
+
 
     // add usuario ao projeto endpoints
     @PostMapping("/add")
@@ -170,30 +176,51 @@ public class ProjetoController {
         return ResponseEntity.ok().build();
     }
 
-    // // Remover um usuário de um projeto:
-    // @DeleteMapping("/{projetoId}/usuario/{usuarioId}")
-    // public ResponseEntity<Void> removeUsuarioFromProjeto(@PathVariable Long
-    // projetoId, @PathVariable Long usuarioId) {
-    // UsuarioProjetoId id = new UsuarioProjetoId();
-    // if (usuarioProjetoRepository.existsById(id)) {
-    // usuarioProjetoRepository.deleteById(id);
-    // return ResponseEntity.noContent().build();
-    // } else {
-    // return ResponseEntity.notFound().build();
-    // }
-    // }
+    @PutMapping("/upprojeto/{id}")
+    public ResponseEntity<Projeto> updateProjeto(@PathVariable Long id,
+            @Validated @RequestBody ProjetoRequestDTO data) {
+        Optional<Projeto> optionalProjeto = projetoRepository.findById(id);
 
-    // // Obter todos os usuários de um projeto:
-    // @GetMapping("/{projetoId}/usuarios")
-    // public ResponseEntity<List<UsuarioProjetoResponseDTO>>
-    // getUsuariosByProjetoId(@PathVariable Long projetoId) {
-    // List<UsuarioProjeto> usuarioProjetos =
-    // usuarioProjetoRepository.findTeamByProjetoId(projetoId);
-    // List<UsuarioProjetoResponseDTO> response = usuarioProjetos.stream()
+        if (!optionalProjeto.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
 
-    // .map(UsuarioProjetoResponseDTO::new)
-    // .collect(Collectors.toList());
-    // return ResponseEntity.ok(response);
-    // }
+        Projeto projeto = optionalProjeto.get();
+        projeto.setNome(data.nome());
+        projeto.setDescricao(data.descricao());
+        projeto.setDataInicio(data.dataInicio());
+        projeto.setDataFim(data.dataFim());
 
+        Projeto updatedProjeto = projetoRepository.save(projeto);
+        return ResponseEntity.ok(updatedProjeto);
+    }
+
+    // Remover um usuário de um projeto:
+    @DeleteMapping("/{projetoId}/usuario/{usuarioId}")
+    public ResponseEntity<Void> removeUsuarioFromProjeto(@PathVariable Long projetoId, @PathVariable Long usuarioId) {
+        UsuarioProjetoId id = new UsuarioProjetoId(projetoId, usuarioId);
+        if (usuarioProjetoRepository.existsById(id)) {
+            List<Tarefa> tarefas = tarefaRepository.findTarefasByUsuarioIdAndProjetoId(usuarioId, projetoId);
+            if (tarefas.isEmpty()) {
+                usuarioProjetoRepository.deleteById(id);
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
+// // Obter todos os usuários de um projeto:
+// @GetMapping("/{projetoId}/usuarios")
+// public ResponseEntity<List<UsuarioProjetoResponseDTO>>
+// getUsuariosByProjetoId(@PathVariable Long projetoId) {
+// List<UsuarioProjeto> usuarioProjetos =
+// usuarioProjetoRepository.findTeamByProjetoId(projetoId);
+// List<UsuarioProjetoResponseDTO> response = usuarioProjetos.stream()
+
+// .map(UsuarioProjetoResponseDTO::new)
+// .collect(Collectors.toList());
+// return ResponseEntity.ok(response);
+// }

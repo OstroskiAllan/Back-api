@@ -16,4 +16,7 @@ public interface TarefaRepository extends JpaRepository<Tarefa, Long>{
 
     //List<Tarefa> findByTarefaProjetoId(Long projetoId);
     //List<Tarefa> findByProjetoId(Long projetoId);
+
+    @Query("SELECT t FROM Tarefa t WHERE t.usuarioId = :usuarioId AND t.projetoId = :projetoId")
+    List<Tarefa> findTarefasByUsuarioIdAndProjetoId(@Param("usuarioId") Long usuarioId, @Param("projetoId") Long projetoId);
 }
