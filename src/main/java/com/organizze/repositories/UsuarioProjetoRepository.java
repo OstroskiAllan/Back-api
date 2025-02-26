@@ -19,6 +19,9 @@ public interface UsuarioProjetoRepository extends JpaRepository<UsuarioProjeto, 
 
     @Query("SELECT up FROM UsuarioProjeto up WHERE up.usuarioId = :usuarioId AND up.cargo <> 'Gerente'")
     List<UsuarioProjeto> findByUsuarioIdAndNotGerente(@Param("usuarioId") Long usuarioId);
+    
+    @Query("SELECT up FROM UsuarioProjeto up WHERE up.usuarioId = :usuarioId AND up.cargo = 'Gerente'")
+    List<UsuarioProjeto> findByUsuarioIdAndGerente(@Param("usuarioId") Long usuarioId);
 
     @Query("SELECT up FROM UsuarioProjeto up WHERE up.projetoId = :projetoId")
     List<UsuarioProjeto> findTeamByProjetoId(@Param("projetoId") Long projetoId);

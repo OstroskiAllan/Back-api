@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @RestController
 @RequestMapping("/projeto")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = { "http://localhost:4200", "http://localhost" })
 public class ProjetoController {
     @Autowired
     private ProjetoRepository projetoRepository;
@@ -106,22 +106,10 @@ public class ProjetoController {
     }
     // ISOLADO ----------------------------------------------------------------
 
-    @GetMapping("/{id}/nome")
-    public ResponseEntity<String> getUserName(@PathVariable Long id) {
-        Optional<Usuario> usuario = usuarioRepository.findById(id);
-
-        if (usuario.isPresent()) {
-            String nomeUsuario = usuario.get().getNome(); // Acessa o nome do usuário
-            return ResponseEntity.ok(nomeUsuario);
-        } else {
-            return ResponseEntity.notFound().build(); // Retorna 404 se o usuário não for encontrado
-        }
-    }
-
     @GetMapping
     public ResponseEntity<List<ProjetoResponseDTO>> getAllProjects(@AuthenticationPrincipal UserDetails userDetails) {
         Long userId = ((Usuario) userDetails).getId();
-        List<UsuarioProjeto> usuarioProjetos = usuarioProjetoRepository.findByUsuarioId(userId);
+        List<UsuarioProjeto> usuarioProjetos = usuarioProjetoRepository.findByUsuarioIdAndGerente(userId);
 
         if (usuarioProjetos.isEmpty()) {
             return ResponseEntity.ok(Collections.emptyList());
@@ -132,6 +120,18 @@ public class ProjetoController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(projetoList);
+    }
+
+    @GetMapping("/{id}/nome")
+    public ResponseEntity<String> getUserName(@PathVariable Long id) {
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+
+        if (usuario.isPresent()) {
+            String nomeUsuario = usuario.get().getNome(); // Acessa o nome do usuário
+            return ResponseEntity.ok(nomeUsuario);
+        } else {
+            return ResponseEntity.notFound().build(); // Retorna 404 se o usuário não for encontrado
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -162,7 +162,6 @@ public class ProjetoController {
         usuarioProjetoRepository.updateUsuarioProjeto(id, data.projetoId(), data.cargo());
         return ResponseEntity.ok().build();
     }
-
 
     // add usuario ao projeto endpoints
     @PostMapping("/add")
@@ -210,6 +209,13 @@ public class ProjetoController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Long> getUserIdByEmail(@PathVariable String email) {
+        Optional<Long> usuario = usuarioRepository.findUserIdByEmail(email);
+        return usuario.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 }
 // // Obter todos os usuários de um projeto:

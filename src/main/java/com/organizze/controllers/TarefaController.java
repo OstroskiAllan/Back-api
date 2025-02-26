@@ -26,7 +26,7 @@ import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/tarefa")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost"})
 public class TarefaController {
     @Autowired
     private TarefaRepository tarefaRepository;
